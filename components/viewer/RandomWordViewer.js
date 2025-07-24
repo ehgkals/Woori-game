@@ -10,7 +10,7 @@ export default function RandomWordViewer({ words, currentIdx, isWrong }) {
     }
   }, [currentIdx]);
   return (
-    <div className="w-full max-w-3xl mx-auto text-center">
+    <div className="w-full max-w-3xl mx-auto text-center h-32">
       <Swiper // 전체 슬라이더 영역
         onSwiper={(swiper) => (swiperRef.current = swiper)}
         spaceBetween={50}
@@ -38,3 +38,8 @@ export default function RandomWordViewer({ words, currentIdx, isWrong }) {
     </div>
   );
 }
+
+
+
+
+
