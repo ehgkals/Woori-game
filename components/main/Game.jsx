@@ -1,4 +1,3 @@
-
 "use client";
 import RandomWordViewer from "@/components/viewer/RandomWordViewer";
 import TypingWord from "@/components/viewer/TypingWord";
@@ -7,8 +6,8 @@ import { fetchRandomWord } from "../../utils/fetchWord";
 
 const Game = ({ onScoreChange, nickname, isPlaying, onStart }) => {
   console.log("<Game /> 렌더링 됨");
-      
-  const [text, setText] = useState('');
+
+  const [text, setText] = useState("");
   const [words, setWords] = useState([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [score, setScore] = useState(0);
@@ -16,7 +15,7 @@ const Game = ({ onScoreChange, nickname, isPlaying, onStart }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    async function loadWords() {                                      
+    async function loadWords() {
       setIsLoading(true);
       console.log(isLoading);
       const data = await fetchRandomWord();
@@ -41,17 +40,16 @@ const Game = ({ onScoreChange, nickname, isPlaying, onStart }) => {
   }, [score, onScoreChange]);
 
   const currentWord = words[currentIdx] || "";
-  
+
   const inputTextfieldHandler = (e) => {
     if (!isPlaying) return;
     const value = e.target.value;
-    if(/^[a-zA-Z]*$/.test(value))
-        setText(value);
+    if (/^[a-zA-Z]*$/.test(value)) setText(value);
   };
 
   const enterHandler = (e) => {
     if (!isPlaying) return;
-    
+
     if (e.key === "Enter" || e.key === " ") {
       if (text.trim() === currentWord) {
         // 입력값과 단어가 일치하면 다음 단어로 이동
@@ -69,13 +67,15 @@ const Game = ({ onScoreChange, nickname, isPlaying, onStart }) => {
       setText("");
     }
   };
-           
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center p-12 h-96">
         <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-500 border-t-transparent mx-auto mb-6"></div>
-          <div className="text-2xl font-bold text-gray-800 mb-2">게임 준비 중...</div>
+          <div className="text-2xl font-bold text-gray-800 mb-2">
+            게임 준비 중...
+          </div>
           <div className="text-gray-600">단어를 불러오고 있습니다</div>
           <div className="flex justify-center mt-4 gap-1">
             {[...Array(3)].map((_, i) => (
@@ -110,24 +110,35 @@ const Game = ({ onScoreChange, nickname, isPlaying, onStart }) => {
         </div>
       </div>
 
+      <RandomWordViewer
+        words={words}
+        currentIdx={currentIdx}
+        isWrong={isWrong}
+        text={text}
+        enterHandler={enterHandler}
+        inputTextfieldHandler={inputTextfieldHandler}
+        disabled={!isPlaying}
+      />
+
       {/* 📝 단어 표시 영역 */}
-      <div className="mb-8">
+      {/* <div className="mb-8">
         <RandomWordViewer
           words={words}
           currentIdx={currentIdx}
           isWrong={isWrong}
         />
-      </div>
+        
+      </div> */}
 
       {/* ⌨️ 타이핑 입력 영역 */}
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <TypingWord
           text={text}
           enterHandler={enterHandler}
           inputTextfieldHandler={inputTextfieldHandler}
           disabled={!isPlaying}
         />
-      </div>
+      </div> */}
 
       {/* 📊 게임 상태 정보 */}
       <div className="grid grid-cols-2 gap-4 mb-6">
@@ -152,9 +163,13 @@ const Game = ({ onScoreChange, nickname, isPlaying, onStart }) => {
             {score > 0 ? (
               <>
                 <div className="text-4xl mb-3">🎉</div>
-                <div className="text-xl font-bold text-gray-800 mb-2">게임 완료!</div>
+                <div className="text-xl font-bold text-gray-800 mb-2">
+                  게임 완료!
+                </div>
                 <div className="text-gray-600 mb-4">
-                  총 <span className="font-bold text-purple-600">{score}개</span>의 단어를 맞추셨습니다
+                  총{" "}
+                  <span className="font-bold text-purple-600">{score}개</span>의
+                  단어를 맞추셨습니다
                 </div>
                 <button
                   onClick={onStart}
@@ -166,7 +181,9 @@ const Game = ({ onScoreChange, nickname, isPlaying, onStart }) => {
             ) : (
               <>
                 <div className="text-4xl mb-3">🚀</div>
-                <div className="text-xl font-bold text-gray-800 mb-2">게임 시작 준비!</div>
+                <div className="text-xl font-bold text-gray-800 mb-2">
+                  게임 시작 준비!
+                </div>
                 <div className="text-gray-600 mb-4">
                   단어를 보고 정확하게 타이핑하세요
                 </div>
@@ -187,7 +204,10 @@ const Game = ({ onScoreChange, nickname, isPlaying, onStart }) => {
         <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-center">
           <div className="flex items-center justify-center gap-2 text-sm text-yellow-700">
             <span>💡</span>
-            <span>현재 단어: <strong className="text-yellow-800">{currentWord}</strong></span>
+            <span>
+              현재 단어:{" "}
+              <strong className="text-yellow-800">{currentWord}</strong>
+            </span>
           </div>
           <div className="text-xs text-yellow-600 mt-1">
             Enter 또는 Space로 제출 • 영어만 입력 가능
@@ -210,4 +230,4 @@ const Game = ({ onScoreChange, nickname, isPlaying, onStart }) => {
   );
 };
 
-export default LeaderBoard;
+export default Game;
