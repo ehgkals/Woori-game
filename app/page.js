@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
 export default function LoginPage() {
@@ -222,11 +223,13 @@ export default function LoginPage() {
 
           {/* 액션 버튼들 */}
           <div className="space-y-3">
-            <button
-              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 font-semibold shadow-lg"
-            >
-              🎮 게임 시작
-            </button>
+            <Link href='/main'>
+              <button
+                className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 font-semibold shadow-lg"
+              >
+                🎮 게임 시작
+              </button>
+            </Link>
             
             <div className="grid grid-cols-2 gap-3">
               <button
