@@ -2,34 +2,39 @@
 
 import { useEffect, useState } from "react";
 
-const mockData = [
-  { rank: 1, name: "Alice", score: 5 },
-  { rank: 2, name: "Bob", score: 4 },
-  { rank: 3, name: "Charlie", score: 3 },
-  { rank: 4, name: "David", score: 2 },
-  { rank: 5, name: "Eve", score: 1 },
-];
-
 const LeaderBoard = ({ score, nickname }) => {
   console.log("<LeaderBoard /> 렌더링 됨");
 
   const [players, setPlayers] = useState(mockData);
 
   useEffect(() => {
-    // 사용자 점수를 mockData에 삽입 (중복 제거)
-    const updated = [
-      ...mockData.filter(player => player.name !== nickname), // 기존 중복 제거
-      { name: nickname, score }, // 현재 사용자 점수 추가
-    ];
+    const fetchLeaderboard = async () => {
+      try {
+        const res = await fetch("/api/users");
+        const data = await res.json();
 
-    const ranked = updated
-      .sort((a, b) => b.score - a.score)
-      .map((player, index) => ({
-        ...player,
-        rank: index + 1,
-      }));
+        if (!Array.isArray(data)) return;
 
-    setPlayers(ranked);
+        const updated = [
+          ...data.filter(player => player.nickname !== nickname),
+          { nickname, score }, // 내 점수
+        ];
+
+        const ranked = updated
+          .sort((a, b) => b.score - a.score)
+          .map((player, index) => ({
+            rank: index + 1,
+            name: player.nickname,
+            score: player.score,
+          }));
+
+        setPlayers(ranked);
+      } catch (error) {
+        console.error("리더보드 불러오기 실패:", error);
+      }
+    };
+
+    fetchLeaderboard();
   }, [score, nickname]);
 
 
