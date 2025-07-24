@@ -24,7 +24,7 @@ export default function Page() {
     }
 
     const enterHandler = (e) => { // 사용자가 엔터를 눌렀을 때만 단어 비교
-        if(e.key === 'Enter'){
+        if(e.key === 'Enter' || e.key === ' '){
             if(text.trim() === currentWord){ // 입력값과 단어가 일치하면 다음 단어롤 이동
                 setCurretIdx(prev => prev + 1); 
                 console.log('Correct!');
