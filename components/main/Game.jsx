@@ -4,15 +4,23 @@ import TypingWord from '@/components/viewer/TypingWord'
 import { useState, useEffect } from 'react';
 import { fetchRandomWord } from '../../utils/fetchWord';
 
-const Game = ({ onScoreChange, nickname }) => {
+const Game = ({ onScoreChange, nickname, isPlaying }) => {
   console.log("<Game /> 렌더링 됨");
 
   const [text, setText] = useState('');
       const [words, setWords] = useState([]);
-      const [currentIdx, setCurretIdx] = useState(0);
+      const [currentIdx, setCurrentIdx] = useState(0);
       const [score, setScore] = useState(0);
-  
+
       useEffect(() => {
+        async function loadWords() {
+            const data = await fetchRandomWord();
+            setWords(data);
+        }
+        loadWords();
+    }, []);
+  
+    useEffect(() => {
     if (!isPlaying) {
       setText("");
       setCurrentIdx(0);
