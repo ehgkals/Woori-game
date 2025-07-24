@@ -240,7 +240,7 @@ export default function LoginPage() {
               </button>
               
               <button
-                onClick={() => window.open('/api/users', '_blank')}
+                onClick={() => window.open('/rankings', '_blank')}
                 className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors font-medium text-sm"
               >
                 👥 사용자 목록
