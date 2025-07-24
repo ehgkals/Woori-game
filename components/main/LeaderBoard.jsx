@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const LeaderBoard = ({ score, nickname }) => {
   console.log("<LeaderBoard /> 렌더링 됨");
 
-  const [players, setPlayers] = useState(mockData);
+  const [players, setPlayers] = useState([]);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
