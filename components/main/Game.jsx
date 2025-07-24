@@ -7,12 +7,12 @@ import { fetchRandomWord } from '../../utils/fetchWord';
 const Game = ({ onScoreChange, nickname, isPlaying }) => {
   console.log("<Game /> 렌더링 됨");
 
-  const [text, setText] = useState('');
-      const [words, setWords] = useState([]);
-      const [currentIdx, setCurrentIdx] = useState(0);
-      const [score, setScore] = useState(0);
+    const [text, setText] = useState('');
+    const [words, setWords] = useState([]);
+    const [currentIdx, setCurrentIdx] = useState(0);
+    const [score, setScore] = useState(0);
 
-      useEffect(() => {
+    useEffect(() => {
         async function loadWords() {
             const data = await fetchRandomWord();
             setWords(data);
@@ -25,8 +25,9 @@ const Game = ({ onScoreChange, nickname, isPlaying }) => {
       setText("");
       setCurrentIdx(0);
       setScore(0);
+      onScoreChange(0);
     }
-  }, [isPlaying]);
+  }, [isPlaying, onScoreChange]);
 
   const currentWord = words[currentIdx] || "";
 
@@ -60,6 +61,15 @@ const Game = ({ onScoreChange, nickname, isPlaying }) => {
         disabled={!isPlaying}
       />
       <div className="mt-4 text-white text-lg">점수: {score}</div>
+
+        {!isPlaying && (
+            <button
+            onClick={onStart}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+            {score > 0 ? '게임 다시 시작' : '게임 시작'}
+            </button>
+        )}
     </div>
   );
 };

@@ -44,6 +44,20 @@ export default function Main() {
         </button>
       )}
 
+      {gameOver && (
+        <>
+          <div className="mt-4 text-red-600 font-bold text-xl">
+            ⏰ 시간이 종료되어 게임이 종료되었습니다!
+          </div>
+          <button
+            onClick={startGame}
+            className="mt-2 px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          >
+            게임 다시 시작
+          </button>
+        </>
+      )}
+
       {isPlaying && (
         <div className="mb-2 text-lg font-semibold">남은 시간: {timeLeft}s</div>
       )}
@@ -53,15 +67,10 @@ export default function Main() {
           onScoreChange={setScore}
           nickname={nickname}
           isPlaying={isPlaying}
+          onStart={startGame}
         />
         <LeaderBoard score={score} nickname={nickname} gameOver={gameOver} />
       </div>
-
-      {gameOver && (
-        <div className="mt-4 text-red-600 font-bold text-xl">
-          ⏰ 시간이 종료되어 게임이 종료되었습니다!
-        </div>
-      )}
     </div>
   );
 }
