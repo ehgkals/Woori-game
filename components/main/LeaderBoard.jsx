@@ -9,6 +9,7 @@ const LeaderBoard = ({ score, nickname, gameOver }) => {
   const [connectionStatus, setConnectionStatus] = useState("연결 중...");
   const socketRef = useRef(null);
 
+  // 매판 세션 플레이어들 관리
   useEffect(() => {
     console.log("🔌 WebSocket 연결 시도...");
     

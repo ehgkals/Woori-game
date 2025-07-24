@@ -1,3 +1,4 @@
+
 "use client";
 import RandomWordViewer from "@/components/viewer/RandomWordViewer";
 import TypingWord from "@/components/viewer/TypingWord";
@@ -209,4 +210,4 @@ const Game = ({ onScoreChange, nickname, isPlaying, onStart }) => {
   );
 };
 
-export default Game;
+export default LeaderBoard;
