@@ -1,7 +1,7 @@
 'use client'
 export default function TypingWord({ text, inputTextfieldHandler, enterHandler }) {
   return (
-    <div className="flex justify-center items-center h-screen"> {/* 화면 중앙 정렬 */}
+    <div className="flex justify-center items-center"> {/* 화면 중앙 정렬 */}
       <input
         onChange={inputTextfieldHandler}
         onKeyDown={enterHandler}
