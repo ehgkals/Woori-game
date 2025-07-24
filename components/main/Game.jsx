@@ -4,12 +4,13 @@ import TypingWord from '@/components/viewer/TypingWord'
 import { useState, useEffect } from 'react';
 import { fetchRandomWord } from '../../utils/fetchWord';
 
-const Game = () => {
+const Game = ({ onScoreChange, nickname }) => {
   console.log("<Game /> 렌더링 됨");
 
   const [text, setText] = useState('');
       const [words, setWords] = useState([]);
       const [currentIdx, setCurretIdx] = useState(0);
+      const [score, setScore] = useState(0);
   
       useEffect(() => {
           async function loadWords() {
@@ -29,7 +30,9 @@ const Game = () => {
       const enterHandler = (e) => { // 사용자가 엔터를 눌렀을 때만 단어 비교
           if(e.key === 'Enter'){
               if(text.trim() === currentWord){ // 입력값과 단어가 일치하면 다음 단어롤 이동
-                  setCurretIdx(prev => prev + 1); 
+                  setCurretIdx(prev => prev + 1);
+                  setScore((prev) => prev + 1);
+                  onScoreChange(score + 1);
                   console.log('Correct!');
               }
               else { // 일치하지 않으면 
@@ -47,6 +50,7 @@ const Game = () => {
             text={text} 
             enterHandler={enterHandler}
             inputTextfieldHandler={inputTextfieldHandler}/>
+            <div className="mt-4 text-white text-lg">점수: {score}</div>
     </div>
   );
 };
