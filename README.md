@@ -1,8 +1,5 @@
 # 우리 FIS 아카데미 5기 nextjs를 활용한 미니 프로젝트 - 우리 게임(WOORI GAME)
 
-# 🎮 우리 게임 (WOORI GAME)
-> **우리 FIS 아카데미 5기** Next.js 미니 프로젝트
-
 <div align="center">
 
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js&logoColor=white)
