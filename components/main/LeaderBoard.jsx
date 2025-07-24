@@ -2,144 +2,120 @@
 
 import { useEffect, useState } from "react";
 
-const LeaderBoard = ({ score, nickname }) => {
-  console.log("<LeaderBoard /> 렌더링 됨");
+const LeaderBoard = ({ currentScore, nickname, gameStatus, allPlayers }) => {
+  console.log("🏆 <LeaderBoard /> 렌더링됨 - props:", { currentScore, nickname, gameStatus });
   
-  const [players, setPlayers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [sessionPlayers, setSessionPlayers] = useState([]);
 
-  const fetchLeaderboard = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch("/api/users");
-      const data = await res.json();
-
-      // 응답 구조 확인
-      if (!data.success || !Array.isArray(data.users)) {
-        throw new Error("데이터 형식이 올바르지 않습니다");
-      }
-
-      // DB 데이터를 점수순으로 정렬
-      const ranked = data.users
-        .sort((a, b) => b.score - a.score)
-        .map((player, index) => ({
-          rank: index + 1,
-          name: player.nickname,
-          score: player.score,
-          isCurrentUser: player.nickname === nickname
-        }));
-
-      setPlayers(ranked);
-      setError(null);
-    } catch (error) {
-      console.error("리더보드 불러오기 실패:", error);
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // 매판 세션 플레이어들 관리
   useEffect(() => {
-    fetchLeaderboard();
+    console.log("📊 세션 플레이어 업데이트:", { allPlayers, currentScore, nickname });
     
-    // 10초마다 자동 업데이트 (실시간 느낌)
-    const interval = setInterval(fetchLeaderboard, 10000);
-    
-    return () => clearInterval(interval);
-  }, [nickname]); // nickname 변경시에만 즉시 업데이트
-
-  // score가 변경되면 즉시 새로고침
-  useEffect(() => {
-    if (score !== undefined) {
-      fetchLeaderboard();
+    if (!allPlayers || !Array.isArray(allPlayers)) {
+      console.log("❌ allPlayers가 없거나 배열이 아님");
+      return;
     }
-  }, [score]);
 
-  if (loading && players.length === 0) {
-    return (
-      <div className="w-1/4 p-4">
-        <h2 className="text-xl font-bold mb-4 text-center">🏆 순위</h2>
-        <div className="text-center text-gray-500">로딩 중...</div>
-      </div>
-    );
-  }
+    // 현재 세션의 모든 플레이어들을 점수순으로 정렬
+    const ranked = allPlayers
+      .sort((a, b) => b.score - a.score)
+      .map((player, index) => ({
+        rank: index + 1,
+        name: player.nickname,
+        score: player.score,
+        isCurrentUser: player.nickname === nickname
+      }));
 
-  if (error) {
-    return (
-      <div className="w-1/4 p-4">
-        <h2 className="text-xl font-bold mb-4 text-center">🏆 순위</h2>
-        <div className="text-center text-red-500 text-sm mb-2">{error}</div>
-        <button 
-          onClick={fetchLeaderboard}
-          className="w-full text-sm px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          다시 시도
-        </button>
-      </div>
-    );
-  }
-
-  // 현재 사용자의 순위 찾기
-  const currentUserRank = players.find(p => p.isCurrentUser)?.rank;
+    setSessionPlayers(ranked);
+    console.log("✅ 세션 랭킹 업데이트:", ranked);
+  }, [allPlayers, currentScore, nickname]);
 
   return (
-    <div className="w-1/4 p-4 overflow-y-auto">
-      <h2 className="text-xl font-bold mb-4 text-center">🏆 순위</h2>
+    <div className="w-1/4 p-4 overflow-y-auto bg-gray-900 text-white">
+      <h2 className="text-xl font-bold mb-4 text-center text-yellow-400">🏆 현재 게임 랭킹</h2>
       
-      <div className="mb-4 text-center">
-        <div className="text-lg font-semibold text-blue-700">
-          내 점수: {score || 0}점
+      {/* 내 현재 점수 */}
+      <div className="mb-6 p-4 bg-blue-900 rounded-lg text-center">
+        <div className="text-2xl font-bold text-blue-300">
+          {currentScore || 0}점
         </div>
-        {currentUserRank && (
-          <div className="text-sm text-gray-600">
-            현재 순위: {currentUserRank}위
+        <div className="text-sm text-blue-200">
+          내 현재 점수
+        </div>
+        {sessionPlayers.length > 0 && (
+          <div className="text-xs text-blue-200 mt-1">
+            {sessionPlayers.length}명 중 {sessionPlayers.findIndex(p => p.isCurrentUser) + 1 || sessionPlayers.length}위
           </div>
         )}
       </div>
 
-      <ul className="space-y-2">
-        {players.length > 0 ? (
-          players.slice(0, 20).map((user) => ( // 상위 20명만 표시
-            <li
-              key={user.name}
-              className={`flex justify-between rounded-lg shadow px-3 py-2 ${
-                user.isCurrentUser 
-                  ? 'bg-blue-100 border-2 border-blue-300' 
-                  : 'bg-white'
+      {/* 세션 랭킹 리스트 */}
+      <div className="space-y-2">
+        <div className="text-center text-sm text-gray-400 mb-3">
+          현재 게임 참여자 랭킹
+        </div>
+        
+        {sessionPlayers.length > 0 ? (
+          sessionPlayers.map((player) => (
+            <div
+              key={player.name}
+              className={`flex items-center justify-between p-3 rounded-lg transition-all ${
+                player.isCurrentUser 
+                  ? 'bg-yellow-600 border-2 border-yellow-400 transform scale-105' 
+                  : 'bg-gray-800 hover:bg-gray-700'
               }`}
             >
-              <span className="font-semibold">
-                {user.rank <= 3 ? (
-                  <span className="text-lg">
-                    {user.rank === 1 ? '🥇' : user.rank === 2 ? '🥈' : '🥉'}
-                  </span>
-                ) : (
-                  `${user.rank}위`
-                )}
+              <div className="flex items-center gap-3">
+                <span className="font-bold text-lg min-w-[2rem]">
+                  {player.rank <= 3 ? (
+                    <span className="text-2xl">
+                      {player.rank === 1 ? '🥇' : player.rank === 2 ? '🥈' : '🥉'}
+                    </span>
+                  ) : (
+                    <span className="text-gray-400">{player.rank}위</span>
+                  )}
+                </span>
+                <span className={`${player.isCurrentUser ? 'font-bold text-white' : 'text-gray-300'}`}>
+                  {player.name}
+                  {player.isCurrentUser && <span className="ml-2 text-yellow-300">(나)</span>}
+                </span>
+              </div>
+              <span className={`font-mono font-bold text-lg ${
+                player.isCurrentUser ? 'text-yellow-100' : 'text-white'
+              }`}>
+                {player.score}점
               </span>
-              <span className={user.isCurrentUser ? 'font-bold' : ''}>
-                {user.name}
-              </span>
-              <span className="font-mono">{user.score}점</span>
-            </li>
+            </div>
           ))
         ) : (
-          <li className="text-center text-gray-500 py-4">
-            플레이어가 없습니다
-          </li>
+          <div className="text-center text-gray-500 py-8">
+            <div className="text-4xl mb-2">🎮</div>
+            <div>아직 플레이어가 없습니다</div>
+            <div className="text-sm mt-1">게임을 시작해보세요!</div>
+          </div>
         )}
-      </ul>
-
-      <div className="mt-4 text-center">
-        <button 
-          onClick={fetchLeaderboard}
-          className="text-xs text-blue-500 hover:text-blue-700"
-          disabled={loading}
-        >
-          {loading ? '🔄 업데이트 중...' : '🔄 새로고침'}
-        </button>
       </div>
+
+      {/* 게임 상태 표시 */}
+      <div className="mt-6 text-center">
+        <div className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+          gameStatus === 'playing' 
+            ? 'bg-green-600 text-green-100' 
+            : gameStatus === 'ended'
+            ? 'bg-red-600 text-red-100'
+            : 'bg-gray-600 text-gray-100'
+        }`}>
+          {gameStatus === 'playing' ? '🎮 게임 중' : 
+           gameStatus === 'ended' ? '🏁 게임 종료' : '⏸️ 대기 중'}
+        </div>
+      </div>
+
+      {/* 실시간 업데이트 표시 */}
+      {gameStatus === 'playing' && (
+        <div className="mt-4 text-xs text-center text-gray-400">
+          <div className="animate-pulse">📡 실시간 업데이트</div>
+        </div>
+      )}
     </div>
   );
 };
