@@ -16,7 +16,7 @@ const LeaderBoard = ({ score, nickname }) => {
         if (!Array.isArray(data)) return;
 
         const updated = [
-          ...data.filter(player => player.nickname !== nickname),
+          ...data.users.filter(player => player.nickname !== nickname),
           { nickname, score }, // 내 점수
         ];
 
